@@ -69,8 +69,8 @@ if abs(wallLoc - state(7)) <= 0.3
         
         for iBumper = 1:4
             if Contact.defl(iBumper) > 0
-             shutdown=1;
-             PropState.shutdown=1;
+             shutdown(iBumper)=1;
+             PropState.shutdown(iBumper)=1;
                 if globalFlag.contact.isContact(iBumper) == 0
                     globalFlag.contact.isContact(iBumper) = 1;
                     globalFlag.contact.initialNormalVel(iBumper) = Contact.deflDeriv(iBumper);
@@ -168,14 +168,13 @@ rpmDeriv = (rpm2rad(rpm) - rpm2rad(rpmPrev))/tStep; %in rad/s^2
 %% Save rate saturated, experiment-matched rpm
 % PropState.rpm = rpm;
 % PropState.rpmDeriv = rpmDeriv;
-if shutdown==1
-    rpmControl(4)=0;
-    Control.rpm(1)=0;
-    rpmControl(2)=0;
-    Control.rpm(3)=0;
-PropState.shutdown=1;
+for iBumper = 1:4
+if shutdown(iBumper)==1
+    rpmControl(iBumper)=0;
+PropState.shutdown(iBumper)=1;
 else
-  PropState.shutdown=0;
+  PropState.shutdown(iBumper)=0;
+end
 end
 PropState.rpm = rpmControl;
 PropState.rpmDeriv = rpmDeriv;

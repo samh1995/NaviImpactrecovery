@@ -21,7 +21,7 @@ clear all;
 
 VxImpact =2;
 inclinationImpact = 12; %degrees
-yawImpact = 45; %degrees
+yawImpact = 0; %degrees
 
 angle = (inclinationImpact - 0.0042477)/1.3836686;
 rollImpact = -angle; %degrees
@@ -168,7 +168,7 @@ iSim
     options = getOdeOptions();
     [tODE,stateODE] = ode45(@(tODE, stateODE) dynamicsystem(tODE,stateODE, ...
                                                             tStep,Control.rpm,ImpactParams,PropState.rpm, ...
-                                                            Experiment.propCmds,Control.rpmshutdown),[iSim iSim+tStep],state,options);
+                                                            Experiment.propCmds,PropState.shutdown),[iSim iSim+tStep],state,options);
     
     % Reset contact flags for continuous time recording        
     globalFlag.contact = localFlag.contact;

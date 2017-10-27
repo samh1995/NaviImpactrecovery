@@ -7,5 +7,5 @@ function PropState = initpropstate()
 
     PropState.rpm = zeros(4,1);
     PropState.rpmDeriv = zeros(4,1);
-    PropState.shutdown=0;
+    PropState.shutdown=zeros(4,1);
 end

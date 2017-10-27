@@ -129,8 +129,6 @@ Control.rpm (Control.rpm < 1000) = 1000; %%%%%%%%%%%%%%%%%%%%%%uncomment
 % set negatives for CW and CCW rotations
 Control.rpm(1) = -Control.rpm(1);
 Control.rpm(3) = -Control.rpm(3);
-if Control.rpmshutdown==1
-    Control.rpm(4)=0;
-end
+
 end
 

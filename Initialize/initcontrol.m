@@ -41,13 +41,13 @@ function [Control] = initcontrol()
     % Control propellor speeds outputs (1, 2, 3, 4)
     Control.rpm = [0; 0; 0; 0];
     Control.rpmDeriv = [0; 0; 0; 0];
-    Control.rpmshutdown=0;
+  
     % controllerposn: 'posn'
     % controlleratt: 'att'
     % controllerrecovery: 'recovery'
     Control.type = 'na';
 %     
-%     Control.recoveryStage = 0; 
+    Control.recoveryStage = 0; 
     Control.accelRef = [0; 0; 0];
     
     Control.accelRefCalculated = 0;
