@@ -1,4 +1,4 @@
-function [stateDeriv, Contact, PropState] = dynamicsystem(t,state,tStep,rpmControl,ImpactParams,rpmPrev,propCmds,rpmshutdown)
+function [stateDeriv, Contact, PropState] = dynamicsystem(t,state,tStep,rpmControl,ImpactParams,rpmPrev,propCmds,shutdown)
 %dynamicsystem.m Continuous dynamics of quadrotor, including contact
 %   Author: Fiona Chui (fiona.chui@mail.mcgill.ca)
 %   Last Updated: December 12, 2016
@@ -68,8 +68,9 @@ if abs(wallLoc - state(7)) <= 0.3
         Contact = findcontact(rotMat, state, wallLoc); %find contact points
         
         for iBumper = 1:4
-            if Contact.defl(iBumper) > 0 %%%%%%%%%%%%%%%%%%here is the deflection!!!!
-
+            if Contact.defl(iBumper) > 0
+             shutdown=1;
+             PropState.shutdown=1;
                 if globalFlag.contact.isContact(iBumper) == 0
                     globalFlag.contact.isContact(iBumper) = 1;
                     globalFlag.contact.initialNormalVel(iBumper) = Contact.deflDeriv(iBumper);
@@ -107,7 +108,7 @@ if abs(wallLoc - state(7)) <= 0.3
                 %Total contact moment 
                 contactMomentBody(:,iBumper) = cross(Contact.point.contactBody(:,iBumper),normalForceBody(:,iBumper)+tangentialForceBody(:,iBumper));
                 
-            else 
+            else
                 if globalFlag.contact.isContact(iBumper) == 1
                     globalFlag.contact.isContact(iBumper) = 0;
                     globalFlag.contact.initialNormalVel(iBumper) = 0;
@@ -165,24 +166,31 @@ globalFlag.experiment.rpmChkptIsPassed = rpmChkptIsPassed;
 rpmDeriv = (rpm2rad(rpm) - rpm2rad(rpmPrev))/tStep; %in rad/s^2
 
 %% Save rate saturated, experiment-matched rpm
-PropState.rpm = rpm;
+% PropState.rpm = rpm;
+% PropState.rpmDeriv = rpmDeriv;
+if shutdown==1
+    rpmControl(4)=0;
+    Control.rpm(1)=0;
+    rpmControl(2)=0;
+    Control.rpm(3)=0;
+PropState.shutdown=1;
+else
+  PropState.shutdown=0;
+end
+PropState.rpm = rpmControl;
 PropState.rpmDeriv = rpmDeriv;
-% rpmshutdown
-% if rpmshutdown == 1
-%     PropState.rpm(4)=0;
-% end
 %% Calculate External Forces and Moments
 Fg = rotMat*[0;0;-m*g]; %Gravity 
 V = 0;
 Fa = Tv*[-0.5*AERO_DENS*V^2*AERO_AREA*Cd;0;0]; %Aerodynamic
-Ft = [0;0;-Kt*sum(rpm.^2)]; %Thruster
+Ft = [0;0;-Kt*sum(rpmControl.^2)]; %Thruster
 
 totalContactForce = sum(normalForceBody,2) + sum(tangentialForceBody,2);
 totalContactMoment = sum(contactMomentBody,2);
 
-Mx = -Kt*PROP_POSNS(2,:)*(rpm.^2)-Kp*state(4)^2-state(5)*Jr*sum(rpm2rad(rpm)) + totalContactMoment(1) ;
-My = Kt*PROP_POSNS(1,:)*(rpm.^2)-Kq*state(5)^2+state(4)*Jr*sum(rpm2rad(rpm)) + totalContactMoment(2) ;
-Mz =  [-Dt Dt -Dt Dt]*(rpm.^2)-Kr*state(6)^2 -Jr*sum(rpmDeriv) + totalContactMoment(3);
+Mx = -Kt*PROP_POSNS(2,:)*(rpmControl.^2)-Kp*state(4)^2-state(5)*Jr*sum(rpm2rad(rpmControl)) + totalContactMoment(1) ;
+My = Kt*PROP_POSNS(1,:)*(rpmControl.^2)-Kq*state(5)^2+state(4)*Jr*sum(rpm2rad(rpmControl)) + totalContactMoment(2) ;
+Mz =  [-Dt Dt -Dt Dt]*(rpmControl.^2)-Kr*state(6)^2 -Jr*sum(rpmDeriv) + totalContactMoment(3);
 
 %% Update State Derivative
 stateDeriv(1:3) = (Fg + Fa + Ft + totalContactForce - m*cross(state(4:6),state(1:3)))/m;
