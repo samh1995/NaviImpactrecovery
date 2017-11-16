@@ -10,10 +10,10 @@ function [Control] = computedesiredacceleration(Control, Twist)
     switch Control.recoveryStage
         case 0 % Normal Flight
             dZ = 0;     
-%             Control.rpmshutdown=0;
+%            
         case 1 % Stabilize Attitude to "away" orientation with zero yaw rate
             dZ = 0;
-%             Control.rpmshutdown=0;
+%         
         case 2 %Stabilize Attitude to "hover" orientation
             Control.accelRef = [0; 0; 0];
             dZ = 0;

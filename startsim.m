@@ -3,8 +3,7 @@
 %   Last Updated: December 12, 2016
 %   Description: Main script/function for running quadrotor simulation.
 %-------------------------------------------------------------------------%
-clc ;
-clear all;
+
 %% Toggle startsim as Script/Function
 % Uncomment section to use startsim.m as function for use in
 % sim_MonteCarlo.m and sim_Batch.m. Also need to uncomment "end" at end of
@@ -12,20 +11,20 @@ clear all;
 %
 % Comment section if using startsim.m as standalone script.
 
-% function [ImpactIdentification,FuzzyInfo,Plot,timeImpact] = startsim(VxImpact, rollImpact, pitchImpact, yawImpact,iBatch)
-% clearvars -except VxImpact rollImpact pitchImpact yawImpact iBatch
+function [ImpactIdentification,FuzzyInfo,Plot,timeImpact] = startsim(VxImpact, rollImpact, pitchImpact, yawImpact,iBatch)
+clearvars -except VxImpact rollImpact pitchImpact yawImpact iBatch
 
 %% Prescribe Initial Conditions
 % (comment section if prescribing from outside function like
 % sim_MonteCarlo.m or sim_Batch.m)
 
-VxImpact =2;
-inclinationImpact = 12; %degrees
-yawImpact = 0; %degrees
+% VxImpact =2;
+% inclinationImpact = 20; %degrees
+% yawImpact = 45; %degrees
 
-angle = (inclinationImpact - 0.0042477)/1.3836686;
-rollImpact = -angle; %degrees
-pitchImpact = -angle; %degrees
+% angle = (inclinationImpact - 0.0042477)/1.3836686;
+% rollImpact = -angle; %degrees
+% pitchImpact = -angle; %degrees
 
 %% Declare Globals
 global g
@@ -118,8 +117,7 @@ end
 %  Control.rpmshutdown=0;
 %% Simulation Loop
 for iSim = SimParams.timeInit:tStep:SimParams.timeFinal-tStep
-iSim
-  PropState.shutdown
+
   
 %     display(iSim)   
    
@@ -248,4 +246,4 @@ plot(Plot.times,Plot.propRpms)
 %% Toggle startsim as Script/Function
 % uncomment "end" if using startsim.m as function
 
-% end
+end

@@ -18,8 +18,8 @@ end
 t = Hist.times;
 stateHist = Hist.states';
 
-figure('Position',[962 25 960 949]);
-
+% figure('Position',[962 25 960 949]);
+figure;
 %% Define body-fixed points and axes
 
 % Body-fixed bumper centers

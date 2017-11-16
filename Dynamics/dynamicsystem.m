@@ -171,7 +171,14 @@ rpmDeriv = (rpm2rad(rpm) - rpm2rad(rpmPrev))/tStep; %in rad/s^2
 for iBumper = 1:4
 if shutdown(iBumper)==1
     rpmControl(iBumper)=0;
+    rpmControl(2)=0;
+    rpmControl(1)=0;
+    rpmControl(3)=0;
 PropState.shutdown(iBumper)=1;
+PropState.shutdown(2)=1;
+PropState.shutdown(1)=1;
+PropState.shutdown(3)=1;
+
 else
   PropState.shutdown(iBumper)=0;
 end

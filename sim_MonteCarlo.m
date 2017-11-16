@@ -10,14 +10,14 @@
 %-------------------------------------------------------------------------%
 
 Batch = [];
-numTrials = 1000;
+numTrials = 4;
 
 for iBatch = 1:numTrials 
     disp(iBatch)
     rollImpact = 30*rand-15; %-15 to 15 deg
-    pitchImpact = 90*rand-45; %-45 to 45 deg
+    pitchImpact = 0; %-45 to 45 deg
     VxImpact = 2*rand+0.5; %0.5 to 2.5 m/s
-    yawImpact = 90*rand-45; %-45 to 45 deg
+    yawImpact =45% 90*rand-45; %-45 to 45 deg
     [CrashData.ImpactIdentification,CrashData.FuzzyInfo,CrashData.Plot,CrashData.timeImpact] = startsim(VxImpact, rollImpact, pitchImpact, yawImpact);
     
     recoveryIdxs = [0;0;0]; %timeImpact, RS1 done, RS2 done
@@ -28,13 +28,13 @@ for iBatch = 1:numTrials
     recoverySuccessful = 0;
     
     recoveryIdxs(1) = vlookup(CrashData.Plot.times,CrashData.timeImpact);
-    if ~isempty(find(CrashData.Plot.recoveryStage == 1,1))
+    if ~isempty(find(CrashData.Plot.recoveryStage == 1,1)) %~ means the opposite, so ~isempty means if its not empty carry on
         allIdxs = find(CrashData.Plot.recoveryStage == 1);
         recoveryIdxs(2) = allIdxs(end);
     end
     if ~isempty(find(CrashData.Plot.recoveryStage == 3,1)) %successful recovery
         allIdxs = find(CrashData.Plot.recoveryStage == 2);
-        recoveryIdxs(3) = allIdxs(end);
+        recoveryIdxs(3) = allIdxs(end)
         recoveryTime = CrashData.Plot.times(recoveryIdxs(3)) - CrashData.timeImpact;
         horizLoss = sqrt(sum((CrashData.Plot.posns(1:2,recoveryIdxs(3)) - CrashData.Plot.posns(1:2,recoveryIdxs(1))).^2));
         heightLoss = CrashData.Plot.posns(3,recoveryIdxs(3)) - CrashData.Plot.posns(3,recoveryIdxs(1));

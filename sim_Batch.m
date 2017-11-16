@@ -1,5 +1,4 @@
 %sim_Batch.m Script to perform batch quadrotor simulation
-%   Author: Fiona Chui (fiona.chui@mail.mcgill.ca)
 %   Last Updated: December 12, 2016
 %   Description: Script to perform batch quadrotor simulation.
 %                Initial collision conditions are prescribed at different
