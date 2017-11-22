@@ -32,13 +32,11 @@ for iBatch = 1:numTrials
         recoveryIdxs(2) = allIdxs(end);
     end
 
-        Distfromwall = sqrt(sum((CrashData.Plot.posns(1:2,20) - CrashData.Plot.posns(1:2, recoveryIdxs(1))).^2));
-        heightLoss = CrashData.Plot.posns(3, recoveryIdxs(1)) - CrashData.Plot.posns(3, 20);
-        xVelRecovered =  CrashData.Plot.posnDerivs(1,20);
+        Distfromwall = sqrt(sum((CrashData.Plot.posns(1:2,100) - CrashData.Plot.posns(1:2, recoveryIdxs(1))).^2));
+        heightLoss = CrashData.Plot.posns(3, recoveryIdxs(1)) - CrashData.Plot.posns(3, 100);
+        xVelRecovered =  CrashData.Plot.posnDerivs(1,100);
 
-        
-    % compute body z-axis direction, -1 because quad z-axis points down
-    bodyFrameZAxis = quatrotate(CrashData.Plot.quaternions(1:4,20)', [0 0 -1]);
+    bodyFrameZAxis = quatrotate(CrashData.Plot.quaternions(100), [0 0 -1]);
     
     
     CrashData.roll_atImpact = rollImpact;

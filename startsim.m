@@ -19,7 +19,7 @@ clearvars -except VxImpact rollImpact pitchImpact yawImpact iBatch
 % sim_MonteCarlo.m or sim_Batch.m)
 
 % VxImpact =2;
-% inclinationImpact = 20; %degrees
+% inclinationImpact = 10; %degrees
 % yawImpact = 45; %degrees
 
 % angle = (inclinationImpact - 0.0042477)/1.3836686;
@@ -41,7 +41,7 @@ ImpactParams = initparams_navi;
 SimParams.recordContTime = 0;
 SimParams.useFaesslerRecovery = 1;%Use Faessler recovery
 SimParams.useRecovery = 1;
-SimParams.timeFinal = 0.6;
+SimParams.timeFinal = 2;
 tStep = 1/200;%1/200;
 
 ImpactParams.wallLoc = 5;%1.5;
@@ -70,7 +70,7 @@ Control.twist.posnDeriv(1) = VxImpact; %World X Velocity at impact      %%%
 IC.attEuler = [deg2rad(rollImpact);...                                  %%%
                deg2rad(pitchImpact);...                                 %%%
                deg2rad(yawImpact)];                                     %%%
-IC.posn = [ImpactParams.wallLoc-0.32;0;2];                              %%%
+IC.posn = [ImpactParams.wallLoc-0.32;0;10];                              %%%
 Setpoint.posn(3) = IC.posn(3);                                          %%%
 xAcc = 0;                                                               %%%
 %%%%%%%%%%% ***** END SET INITIAL CONDITIONS HERE ***** %%%%%%%%%%%%%%%%%%%
