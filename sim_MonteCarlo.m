@@ -9,14 +9,20 @@
 %-------------------------------------------------------------------------%
 
 Batch = [];
-numTrials = 4;
+numTrials =50;
 
 for iBatch = 1:numTrials 
     disp(iBatch)
-    rollImpact = 30*rand-15; %-15 to 15 deg
-    pitchImpact = 0; %-45 to 45 deg
+
+    inclinationImpact = 10*rand-20; %degrees
+    angle = (inclinationImpact - 0.0042477)/1.3836686;
+    rollImpact = -angle; %degrees
+    pitchImpact = -angle; %degrees
+        %     rollImpact = 30*rand-15; %-15 to 15 deg
+        %     pitchImpact = 90*rand-45; %-45 to 45 deg
     VxImpact = 2*rand+0.5; %0.5 to 2.5 m/s
     yawImpact =45% 90*rand-45; %-45 to 45 deg
+    
     [CrashData.ImpactIdentification,CrashData.FuzzyInfo,CrashData.Plot,CrashData.timeImpact] = startsim(VxImpact, rollImpact, pitchImpact, yawImpact);
     
     recoveryIdxs = [0;0;0]; %timeImpact, RS1 done, RS2 done
@@ -27,20 +33,33 @@ for iBatch = 1:numTrials
     recoverySuccessful = 0;
     
     recoveryIdxs(1) = vlookup(CrashData.Plot.times,CrashData.timeImpact);
-    if ~isempty(find(CrashData.Plot.recoveryStage == 1,1)) %~ means the opposite, so ~isempty means if its not empty carry on
-        allIdxs = find(CrashData.Plot.recoveryStage == 1);
-        recoveryIdxs(2) = allIdxs(end);
-    end
-
-        Distfromwall = sqrt(sum((CrashData.Plot.posns(1:2,20) - CrashData.Plot.posns(1:2, recoveryIdxs(1))).^2));
-        heightLoss = CrashData.Plot.posns(3, recoveryIdxs(1)) - CrashData.Plot.posns(3, 20);
-        xVelRecovered =  CrashData.Plot.posnDerivs(1,20);
+%     if ~isempty(find(CrashData.Plot.recoveryStage == 1,1)) %~ means the opposite, so ~isempty means if its not empty carry on
+%         allIdxs = find(CrashData.Plot.recoveryStage == 1);
+%         recoveryIdxs(2) = allIdxs(end);
+%     end
 
         
+
+     WallNormal=CrashData.ImpactIdentification.wallNormalWorld;
     % compute body z-axis direction, -1 because quad z-axis points down
-    bodyFrameZAxis = quatrotate(CrashData.Plot.quaternions(1:4,20)', [0 0 -1]);
+for i=recoveryIdxs(1):length(CrashData.Plot.times)
+    bodyFrameZAxis = quatrotate(CrashData.Plot.quaternions(1:4,i)', [0 0 -1]);
+ 
+    if recoveryIdxs(2)==0
+        if dot( WallNormal,bodyFrameZAxis) > 0
+        recoveryIdxs(2)=1;
+        recoveryIdxs(3)=CrashData.Plot.times(i);
+        Distfromwall = sqrt(sum((CrashData.Plot.posns(1:2,i) - CrashData.Plot.posns(1:2, recoveryIdxs(1))).^2));
+        heightLoss = CrashData.Plot.posns(3, recoveryIdxs(1)) - CrashData.Plot.posns(3, i);
+        xVelRecovered =  CrashData.Plot.posnDerivs(1,i);
+        end
+    end
     
-    
+    theta = acos(dot(bodyFrameZAxis, WallNormal));
+end
+
+    CrashData.inclinationImpact=inclinationImpact;
+    CrashData.theta =theta;
     CrashData.roll_atImpact = rollImpact;
     CrashData.pitch_atImpact = pitchImpact; %in degrees;
     CrashData.vel_atImpact = VxImpact ;
@@ -50,6 +69,7 @@ for iBatch = 1:numTrials
     CrashData.heightLoss = heightLoss;
     CrashData.xVelRecovered = xVelRecovered;
     CrashData.BodyZAxis=bodyFrameZAxis;
+   
 %     CrashData.recoverySuccessful = recoverySuccessful;
     Batch = [Batch;CrashData];
 end

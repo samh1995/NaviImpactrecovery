@@ -242,7 +242,7 @@ end
 
 %% Generate plottable arrays
 Plot = hist2plot(Hist);
-plot(Plot.times,Plot.propRpms)
+% plot(Plot.times,Plot.propRpms)
 %% Toggle startsim as Script/Function
 % uncomment "end" if using startsim.m as function
 
