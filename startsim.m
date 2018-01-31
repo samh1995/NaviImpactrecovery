@@ -25,7 +25,8 @@ clearvars -except VxImpact rollImpact pitchImpact yawImpact iBatch
 % angle = (inclinationImpact - 0.0042477)/1.3836686;
 % rollImpact = -angle; %degrees
 % pitchImpact = -angle; %degrees
-
+% pitchImpact =-45;
+% pitchImpact =-45;
 %% Declare Globals
 global g
 global timeImpact
@@ -41,7 +42,7 @@ ImpactParams = initparams_navi;
 SimParams.recordContTime = 0;
 SimParams.useFaesslerRecovery = 1;%Use Faessler recovery
 SimParams.useRecovery = 1;
-SimParams.timeFinal = 2;
+SimParams.timeFinal =0.3;
 tStep = 1/200;%1/200;
 
 ImpactParams.wallLoc = 5;%1.5;

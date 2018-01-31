@@ -9,18 +9,18 @@
 %-------------------------------------------------------------------------%
 
 Batch = [];
-numTrials =50;
+numTrials =20;
 
 for iBatch = 1:numTrials 
     disp(iBatch)
 
-    inclinationImpact = 10*rand-20; %degrees
+    inclinationImpact = 20*rand+10; %degrees
     angle = (inclinationImpact - 0.0042477)/1.3836686;
     rollImpact = -angle; %degrees
     pitchImpact = -angle; %degrees
         %     rollImpact = 30*rand-15; %-15 to 15 deg
         %     pitchImpact = 90*rand-45; %-45 to 45 deg
-    VxImpact = 2*rand+0.5; %0.5 to 2.5 m/s
+    VxImpact =2*rand+0.5; %0.5 to 2.5 m/s
     yawImpact =45% 90*rand-45; %-45 to 45 deg
     
     [CrashData.ImpactIdentification,CrashData.FuzzyInfo,CrashData.Plot,CrashData.timeImpact] = startsim(VxImpact, rollImpact, pitchImpact, yawImpact);
@@ -42,7 +42,7 @@ for iBatch = 1:numTrials
 
      WallNormal=CrashData.ImpactIdentification.wallNormalWorld;
     % compute body z-axis direction, -1 because quad z-axis points down
-for i=recoveryIdxs(1):length(CrashData.Plot.times)
+for i=recoveryIdxs(1)+2:length(CrashData.Plot.times) %%how long before we start cehcking
     bodyFrameZAxis = quatrotate(CrashData.Plot.quaternions(1:4,i)', [0 0 -1]);
  
     if recoveryIdxs(2)==0
@@ -57,7 +57,8 @@ for i=recoveryIdxs(1):length(CrashData.Plot.times)
     
     theta = acos(dot(bodyFrameZAxis, WallNormal));
 end
-
+CrashData.recoverysucc=recoveryIdxs(2);
+CrashData.recoverytimeaway= recoveryIdxs(3);
     CrashData.inclinationImpact=inclinationImpact;
     CrashData.theta =theta;
     CrashData.roll_atImpact = rollImpact;
@@ -74,5 +75,5 @@ end
     Batch = [Batch;CrashData];
 end
 
-save('MonteCarlo.mat')
+save('MonteCarlo1.mat')
 

@@ -1,6 +1,0 @@
-
-temp = struct2cell(Batch.inclinationImpact);
-Plot.propRpms = [temp{1,:}];
-x=Batch.inclinationImpact;
-y=Batch.vel_atImpact;
-scatter(x,y)
